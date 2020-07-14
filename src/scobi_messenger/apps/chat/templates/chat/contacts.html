@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}| Contacts{% endblock title %}
+
+{% block content %}
+<h1>Contacts</h1>
+<a href="{% url 'chat:chat_index' %}">Go to conversations.</a>
+<hr>
+{% for contact in contacts %}
+  {% if contact.username != user.username %}
+    <a href="{% url 'chat:user_chat' username=contact.username %}">{{ contact.username }}</a> <br>
+  {% endif %}
+{% endfor %}
+{% endblock content %}

@@ -3,4 +3,26 @@
 {% block content %}
 <h1>Welcome {{ user.username }}</h1>
 <a href="{% url 'accounts:logout' %}">Log out.</a>
+<a href="{% url 'chat:contacts' %}">Contacts</a>
+<h3>Conversations</h3> <hr>
+{% for conversation in conversations %}
+  {% comment %}@TODO: coversation.messages.count u view'da filter olarak ekle{% endcomment %}
+  {% if coversation.messages.count > 0 %} 
+    <a href="#">
+      <p>
+        {% for conversation_user in conversation.users.all %}
+          {% if conversation_user.username != user.username %}
+            {{ conversation_user.username }}
+          {% endif %}
+        {% endfor %}
+      </p>
+      <p>
+        Print last message
+      </p>
+    </a>
+  {% endif %}
+{% endfor %}
+{% if not conversations %}
+  <p>No chat messages yet</p>
+{% endif %}
 {% endblock content %}

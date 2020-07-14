@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}| {{ to_user.username }}{% endblock title %}
+
+{% block content %}
+<div>
+  {% for message in messages %}
+    <div>
+      <h3>{{ message.sender.username }}</h3>
+      <p>{{ message.text }}</p>
+      <p>{{ message.created_at }}</p>
+    </div>
+    <hr>
+  {% endfor %}
+</div>
+
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+
+{{ conversation.pk|json_script:"conversation-id" }}
+{{ to_user.username|json_script:"to-user-username" }}
+
+<script>
+  const conversationId = JSON.parse(document.getElementById('conversation-id').textContent);
+  const toUserUsername = JSON.parse(document.getElementById('to-user-username').textContent);
+
+  const chatSocket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/chat/conversations/'
+    + conversationId
+    + '/'
+    + toUserUsername
+    + '/'
+  );
+
+  chatSocket.onclose = function(e) {
+    console.error('Chat socket closed unexpectedly');
+  };
+</script>
+{% endblock content %}
