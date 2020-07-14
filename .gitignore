@@ -3,6 +3,11 @@ venv/
 # Created by https://www.toptal.com/developers/gitignore/api/django,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=django,python
 
+### Redis ###
+# Ignore redis binary dump (dump.rdb) files
+
+*.rdb
+
 ### Django ###
 *.log
 *.pot
