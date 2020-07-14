@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}|Log In{% endblock title %}
+
+{% block content %}
+<form action="{% url 'accounts:login' %}" method="POST">
+  {% csrf_token %}
+  <h1>Scobi Messenger - Log In</h1>
+  <h3>Log in to continue...</h3>
+  {{ form.as_p }}
+  <input type="submit" value="Log In">
+  <p>Don't have an account? Please <a href="{% url 'accounts:signup' %}">signup</a>.</p>
+</form>
+{% endblock content %}
