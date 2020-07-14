@@ -13,8 +13,10 @@ class Conversation(models.Model):
 class Message(models.Model):
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name="messages")
-    sender = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="messages")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name="outgoing_messages")
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE,
+                                related_name="incoming_messages")
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
