@@ -16,7 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from scobi_messenger.apps.chat import views as chat_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('scobi_messenger.apps.accounts.urls', namespace="accounts")),
+    path('chat/', include('scobi_messenger.apps.chat.urls', namespace="chat")),
+    path('', chat_views.index, name='index'),
 ]
