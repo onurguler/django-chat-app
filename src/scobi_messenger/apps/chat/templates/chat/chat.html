@@ -2,8 +2,39 @@
 
 {% block title %}| {{ to_user.username }}{% endblock title %}
 
+{% block style %}
+<style>
+  .chat-input-container {
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-top: 1px solid black;
+    height: 36px;
+  }
+
+  .chat-input {
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  .send-button {
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .chat-container {
+    max-height: calc(100% - 42px);
+    padding: 0.5rem;
+  }
+</style>
+{% endblock style %}
 {% block content %}
-<div>
+<div class="chat-container">
   {% for message in messages %}
     <div>
       <h3>{{ message.sender.username }}</h3>
@@ -14,8 +45,11 @@
   {% endfor %}
 </div>
 
-<input id="chat-message-input" type="text" size="100"><br>
-<input id="chat-message-submit" type="button" value="Send">
+{% csrf_token %}
+<div class="chat-input-container">
+  <input class="chat-input" id="chat-message-input" type="text" placeholder="Write chat message here..."><br>
+  <input class="send-button" id="chat-message-submit" type="button" value="Send">
+</div>
 
 {{ conversation.pk|json_script:"conversation-id" }}
 {{ to_user.username|json_script:"to-user-username" }}
@@ -23,7 +57,7 @@
 <script>
   const conversationId = JSON.parse(document.getElementById('conversation-id').textContent);
   const toUserUsername = JSON.parse(document.getElementById('to-user-username').textContent);
-
+  
   const chatSocket = new WebSocket(
     'ws://'
     + window.location.host
@@ -34,8 +68,47 @@
     + '/'
   );
 
+  chatSocket.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    data = JSON.parse(data.message);
+    console.log(data);
+    const chatContainerDom = document.querySelector('.chat-container');
+    const divTag = document.createElement("div");
+    const h3Tag = document.createElement("h3");
+    const pTag1 = document.createElement("p");
+    const pTag2 = document.createElement("p");
+    h3Tag.innerText = data.sender;
+    pTag1.innerText = data.text;
+    pTag2.innerText = data.created_at;
+    divTag.appendChild(h3Tag);
+    divTag.appendChild(pTag1);
+    divTag.appendChild(pTag2);
+    chatContainerDom.appendChild(divTag);
+  };
+  
   chatSocket.onclose = function(e) {
     console.error('Chat socket closed unexpectedly');
+  };
+
+  document.querySelector('#chat-message-submit').onclick = function(e) {
+    const csrfMiddlewareToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+
+    var xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', '/chat/user/' + toUserUsername + '/send/', true);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.send('text=' + message + '&csrfmiddlewaretoken=' + csrfMiddlewareToken);
+
+    xhr.onload = function () {
+      if (xhr.status == 200) {
+        console.log('success');
+      }
+    }
+
+    messageInputDom.value = '';
   };
 </script>
 {% endblock content %}

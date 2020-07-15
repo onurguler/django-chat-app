@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from scobi_messenger.apps.accounts.models import User
-from .models import Conversation
+from .models import Conversation, Contact
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -32,12 +32,16 @@ class ChatConsumer(WebsocketConsumer):
         try:
             to_user = User.objects.get(username=self.to_user_username)
             conversation = Conversation.objects.get(pk=self.conversation_id)
-            conversation_users = conversation.users.all()
+            conversation_users = conversation.participants.all()
 
-            if not self.user in conversation_users:
+            contact_user = Contact.objects.get(user=self.user, friend=to_user)
+            contact_to_user = Contact.objects.get(
+                user=to_user, friend=self.user)
+
+            if not contact_user in conversation_users:
                 self.close()
                 return
-            if not to_user in conversation_users:
+            if not contact_to_user in conversation_users:
                 self.close()
                 return
 

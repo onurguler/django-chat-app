@@ -3,8 +3,21 @@ from django.db import models
 from scobi_messenger.apps.accounts.models import User
 
 
+class Contact(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="contacts")
+    friend = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "%(user)s - %(friend)s" % {
+            'user': self.user.username,
+            'friend': self.friend.username
+        }
+
+
 class Conversation(models.Model):
-    users = models.ManyToManyField(User, related_name="conversations")
+    participants = models.ManyToManyField(
+        Contact, blank=True, related_name="conversations")
 
     def __str__(self):
         return '{}'.format(self.pk)
