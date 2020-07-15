@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 import channels.layers
 from asgiref.sync import async_to_sync
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.humanize.templatetags import humanize
 import json
 
 from scobi_messenger.apps.accounts.models import User
@@ -124,6 +125,7 @@ def send_user_chat_message(request, username):
     message_json = message_json[0]["fields"]
     message_json["sender"] = user.username
     message_json["to_user"] = to_user.username
+    message_json["created_at"] = str(humanize.naturaltime(message.created_at))
     message_json = json.dumps(message_json)
 
     channel_layer = channels.layers.get_channel_layer()

@@ -33,13 +33,14 @@
   }
 </style>
 {% endblock style %}
+{% load humanize %}
 {% block content %}
 <div class="chat-container">
   {% for message in messages %}
     <div>
       <h3>{{ message.sender.username }}</h3>
       <p>{{ message.text }}</p>
-      <p>{{ message.created_at }}</p>
+      <p>{{ message.created_at|naturaltime }}</p>
     </div>
     <hr>
   {% endfor %}
