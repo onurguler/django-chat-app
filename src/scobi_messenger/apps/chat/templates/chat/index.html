@@ -7,20 +7,18 @@
 <h3>Conversations</h3> <hr>
 {% for conversation in conversations %}
   {% comment %}@TODO: coversation.messages.count u view'da filter olarak ekle{% endcomment %}
-  {% if coversation.messages.count > 0 %} 
-    <a href="#">
-      <p>
-        {% for conversation_user in conversation.users.all %}
-          {% if conversation_user.username != user.username %}
-            {{ conversation_user.username }}
-          {% endif %}
-        {% endfor %}
-      </p>
-      <p>
-        Print last message
-      </p>
-    </a>
-  {% endif %}
+    {% if conversation.messages.count > 0 %}
+      {% for participant in conversation.participants.all %}
+        {% if participant.friend.username != user.username %}
+          <a href="{% url 'chat:user_chat' username=participant.friend.username %}">
+            <p>{{ participant.friend.username }}</p>
+            <p>
+              {{ conversation.get_last_message.sender.username }}: {{ conversation.get_last_message.text }} {{ conversation.get_last_message.created_at }}
+            </p>
+          </a>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
 {% endfor %}
 {% if not conversations %}
   <p>No chat messages yet</p>

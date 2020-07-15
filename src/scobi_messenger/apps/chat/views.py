@@ -6,6 +6,7 @@ from django.forms.models import model_to_dict
 import channels.layers
 from asgiref.sync import async_to_sync
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count
 from django.contrib.humanize.templatetags import humanize
 import json
 
@@ -17,8 +18,10 @@ from .models import Conversation, Message, Contact
 def index(request):
     # @TODO: send conversation list to template
     # conversations = request.user.contacts.conversations.all()
+    user = request.user
+    conversations = Conversation.objects.filter(participants__user=user)
     return render(request, 'chat/index.html', {
-        # 'conversations': conversations
+        'conversations': conversations
     })
 
 

@@ -22,6 +22,9 @@ class Conversation(models.Model):
     def __str__(self):
         return '{}'.format(self.pk)
 
+    def get_last_message(self):
+        return self.messages.order_by("-created_at")[0]
+
 
 class Message(models.Model):
     conversation = models.ForeignKey(
