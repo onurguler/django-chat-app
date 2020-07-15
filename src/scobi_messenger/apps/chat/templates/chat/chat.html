@@ -78,12 +78,14 @@
     const h3Tag = document.createElement("h3");
     const pTag1 = document.createElement("p");
     const pTag2 = document.createElement("p");
+    const hrTag = document.createElement("hr");
     h3Tag.innerText = data.sender;
     pTag1.innerText = data.text;
     pTag2.innerText = data.created_at;
     divTag.appendChild(h3Tag);
     divTag.appendChild(pTag1);
     divTag.appendChild(pTag2);
+    divTag.appendChild(hrTag);
     chatContainerDom.appendChild(divTag);
   };
   
