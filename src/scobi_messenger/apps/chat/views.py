@@ -3,11 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core import serializers
 from django.forms.models import model_to_dict
-import channels.layers
 from asgiref.sync import async_to_sync
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Count
 from django.contrib.humanize.templatetags import humanize
+import channels.layers
 import json
 
 from scobi_messenger.apps.accounts.models import User
@@ -78,10 +78,13 @@ def user_chat(request, username):
 
     messages = conversation.messages.order_by('-created_at')[::-1]
 
+    conversations = Conversation.objects.filter(participants__user=user)
+
     return render(request, 'chat/chat.html', {
         'to_user': to_user,
         'conversation': conversation,
-        'messages': messages
+        'messages': messages,
+        'conversations': conversations
     })
 
 

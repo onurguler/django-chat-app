@@ -1,26 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Welcome {{ user.username }}</h1>
-<a href="{% url 'accounts:logout' %}">Log out.</a>
-<a href="{% url 'chat:contacts' %}">Contacts</a>
-<h3>Conversations</h3> <hr>
-{% for conversation in conversations %}
-  {% comment %}@TODO: coversation.messages.count u view'da filter olarak ekle{% endcomment %}
-    {% if conversation.messages.count > 0 %}
-      {% for participant in conversation.participants.all %}
-        {% if participant.friend.username != user.username %}
-          <a href="{% url 'chat:user_chat' username=participant.friend.username %}">
-            <p>{{ participant.friend.username }}</p>
-            <p>
-              {{ conversation.get_last_message.sender.username }}: {{ conversation.get_last_message.text }} {{ conversation.get_last_message.created_at }}
-            </p>
-          </a>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-{% endfor %}
-{% if not conversations %}
-  <p>No chat messages yet</p>
-{% endif %}
+<div class="chat__page-wrapper">
+  {% include 'chat/_conversations.html' %}
+
+  <div class="chat">
+    <div class="chat__empty">
+      <p>No chat messages opened yet.</p>
+    </div>
+  </div>
+</div>
 {% endblock content %}
+
+{% block javascript %}
+{% load static %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock javascript %}

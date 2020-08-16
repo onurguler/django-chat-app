@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,9 +7,12 @@
   <title>Scobi Messenger {% block title %}{% endblock title %}</title>
   {% block style %}
   {% endblock style %}
+  <link rel="stylesheet" href="{% static 'css/minimal.css' %}">
 </head>
 <body>
   {% block content %}
   {% endblock content %}
+  {% block javascript %}
+  {% endblock javascript %}
 </body>
 </html>
